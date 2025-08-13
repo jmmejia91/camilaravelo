@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Tratamiento Facial</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .container {
+            max-width: 800px;
+        }
+        .checkbox-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+        .signature-pad {
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            cursor: crosshair;
+        }
+        @media (max-width: 640px) {
+            .checkbox-container {
+                grid-template-columns: 1fr;
+            }
+        } 
+        /* Estilos para el mensaje de estado */
+        .message-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            text-align: center;
+        }
+        .message-box.success {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .message-box.error {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <div class="container bg-white shadow-xl rounded-2xl p-8 md:p-12 space-y-8">
+        <!-- Encabezado como imagen -->
+        <header class="text-center">
+            <img src="https://placehold.co/800x200/c9a86a/FFFFFF?text=Camila+Ravelo+-+Historia+de+Paciente" alt="Encabezado del formulario" class="w-full h-auto rounded-lg">
+        </header>
+
+        <!-- Información del Paciente -->
+        <section class="space-y-6">
+            <h2 class="text-2xl font-bold text-[#c9a86a]">Información del Paciente</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Nombre -->
+                <div>
+                    <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre:</label>
+                    <input type="text" id="nombre" name="nombre" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+                </div>
+                <!-- Fecha de nacimiento -->
+                <div>
+                    <label for="fechaNacimiento" class="block text-sm font-medium text-gray-700">Fecha de nacimiento:</label>
+                    <input type="date" id="fechaNacimiento" name="fechaNacimiento" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+                </div>
+                <!-- Edad -->
+                <div>
+                    <label for="edad" class="block text-sm font-medium text-gray-700">Edad:</label>
+                    <input type="number" id="edad" name="edad" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+                </div>
+                <!-- Género -->
+                <div class="flex items-center space-x-4 mt-6">
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="genero" value="femenino" class="form-radio text-indigo-600">
+                        <span class="ml-2 text-gray-700">Femenino</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="genero" value="masculino" class="form-radio text-indigo-600">
+                        <span class="ml-2 text-gray-700">Masculino</span>
+                    </label>
+                </div>
+                <!-- Dirección -->
+                <div>
+                    <label for="direccion" class="block text-sm font-medium text-gray-700">Dirección:</label>
+                    <input type="text" id="direccion" name="direccion" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+                </div>
+                <!-- Ciudad -->
+                <div>
+                    <label for="ciudad" class="block text-sm font-medium text-gray-700">Ciudad:</label>
+                    <input type="text" id="ciudad" name="ciudad" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+                </div>
+                <!-- E-mail -->
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700">E-mail:</label>
+                    <input type="email" id="email" name="email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+                </div>
+                <!-- Teléfono -->
+                <div>
+                    <label for="telefono" class="block text-sm font-medium text-gray-700">Teléfono:</label>
+                    <input type="tel" id="telefono" name="telefono" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+                </div>
+            </div>
+
+            <!-- Preguntas Sí/No -->
+            <div class="space-y-4 mt-6">
+                <!-- Padece alguna condición médica -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">¿Padece alguna condición médica diagnosticada?</label>
+                    <div class="mt-1 flex items-center space-x-4">
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="condicionMedica" value="si" class="form-radio text-indigo-600">
+                            <span class="ml-2 text-gray-700">Sí</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="condicionMedica" value="no" class="form-radio text-indigo-600">
+                            <span class="ml-2 text-gray-700">No</span>
+                        </label>
+                        <input type="text" placeholder="¿Cuál (es)?" class="ml-4 flex-grow rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+                    </div>
+                </div>
+                <!-- Toma medicamentos -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">¿Toma medicamentos actualmente?</label>
+                    <div class="mt-1 flex items-center space-x-4">
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="medicamentos" value="si" class="form-radio text-indigo-600">
+                            <span class="ml-2 text-gray-700">Sí</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="medicamentos" value="no" class="form-radio text-indigo-600">
+                            <span class="ml-2 text-gray-700">No</span>
+                        </label>
+                        <input type="text" placeholder="¿Cuál (es)?" class="ml-4 flex-grow rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+                    </div>
+                </div>
+                <!-- Reacciones alérgicas -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">¿Ha tenido reacciones alérgicas a cosméticos o medicamentos?</label>
+                    <div class="mt-1 flex items-center space-x-4">
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="reaccionesAlergicas" value="si" class="form-radio text-indigo-600">
+                            <span class="ml-2 text-gray-700">Sí</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="reaccionesAlergicas" value="no" class="form-radio text-indigo-600">
+                            <span class="ml-2 text-gray-700">No</span>
+                        </label>
+                        <input type="text" placeholder="¿Cuál (es)?" class="ml-4 flex-grow rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+                    </div>
+                </div>
+                <!-- Enfermedad de la piel -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">¿Tiene alguna enfermedad de la piel (acné, rosácea, dermatitis, etc.)?</label>
+                    <div class="mt-1 flex items-center space-x-4">
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="enfermedadPiel" value="si" class="form-radio text-indigo-600">
+                            <span class="ml-2 text-gray-700">Sí</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="enfermedadPiel" value="no" class="form-radio text-indigo-600">
+                            <span class="ml-2 text-gray-700">No</span>
+                        </label>
+                        <input type="text" placeholder="¿Cuál (es)?" class="ml-4 flex-grow rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+                    </div>                 </div>
+                <!-- Tratamientos faciales anteriores -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">¿Ha recibido tratamientos faciales anteriormente?</label>
+                    <div class="mt-1 flex items-center space-x-4">
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="tratamientosAnteriores" value="si" class="form-radio text-indigo-600">
+                            <span class="ml-2 text-gray-700">Sí</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="tratamientosAnteriores" value="no" class="form-radio text-indigo-600">
+                            <span class="ml-2 text-gray-700">No</span>
+                        </label>
+                        <input type="text" placeholder="¿Cuál (es)?" class="ml-4 flex-grow rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tipo de piel -->
+            <div class="mt-6">
+                <label class="block text-sm font-medium text-gray-700">¿Cómo describirías tu tipo de piel?</label>
+                <div class="mt-1 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="tipoPiel" value="normal" class="form-radio text-indigo-600">
+                        <span class="ml-2 text-gray-700">Normal</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="tipoPiel" value="seca" class="form-radio text-indigo-600">
+                        <span class="ml-2 text-gray-700">Seca</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="tipoPiel" value="grasa" class="form-radio text-indigo-600">
+                        <span class="ml-2 text-gray-700">Grasa</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="tipoPiel" value="mixta" class="form-radio text-indigo-600">
+                        <span class="ml-2 text-gray-700">Mixta</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="tipoPiel" value="sensible" class="form-radio text-indigo-600">
+                        <span class="ml-2 text-gray-700">Sensible/reactiva</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="tipoPiel" value="noSegura" class="form-radio text-indigo-600">
+                        <span class="ml-2 text-gray-700">No estoy segura</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Síntomas -->
+            <div class="mt-6">
+                <label class="block text-sm font-medium text-gray-700">¿Presentas con frecuencia alguno de estos síntomas?</label>
+                <div class="mt-1 checkbox-container">
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" name="sintomas" value="tirantez" class="form-checkbox rounded text-indigo-600">
+                        <span class="ml-2 text-gray-700">Tirantez o resequedad</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" name="sintomas" value="poros" class="form-checkbox rounded text-indigo-600">
+                        <span class="ml-2 text-gray-700">Poros dilatados</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" name="sintomas" value="enrojecimiento" class="form-checkbox rounded text-indigo-600">
+                        <span class="ml-2 text-gray-700">Enrojecimiento o ardor</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" name="sintomas" value="manchas" class="form-checkbox rounded text-indigo-600">
+                        <span class="ml-2 text-gray-700">Manchas o pigmentación irregular</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" name="sintomas" value="brotes" class="form-checkbox rounded text-indigo-600">
+                        <span class="ml-2 text-gray-700">Brotes o granitos</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" name="sintomas" value="brillo" class="form-checkbox rounded text-indigo-600">
+                        <span class="ml-2 text-gray-700">Brillo excesivo</span>
+                    </label>
+                </div>
+                <input type="text" placeholder="¿Cuál (es)?" class="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+            </div>
+        </section>
+
+        <!-- Información Médica -->
+        <section class="space-y-6 mt-8">
+            <h2 class="text-2xl font-bold text-[#c9a86a]">Información Médica</h2>
+            <p class="text-sm text-gray-500">Por favor chequea las condiciones que te pueden afectar:</p>
+            <div class="checkbox-container">
+                <label class="inline-flex items-center">
+                    <input type="checkbox" name="condiciones" value="embarazo" class="form-checkbox rounded text-indigo-600">
+                    <span class="ml-2 text-gray-700">Embarazo</span>
+                </label>
+                <label class="inline-flex items-center">
+                    <input type="checkbox" name="condiciones" value="lactancia" class="form-checkbox rounded text-indigo-600">
+                    <span class="ml-2 text-gray-700">Lactancia</span>
+                </label>
+                <label class="inline-flex items-center">
+                    <input type="checkbox" name="condiciones" value="alergiasCutaneas" class="form-checkbox rounded text-indigo-600">
+                    <span class="ml-2 text-gray-700">Alergias cutáneas</span>
+                </label>
+                <label class="inline-flex items-center">
+                    <input type="checkbox" name="condiciones" value="diabetes" class="form-checkbox rounded text-indigo-600">
+                    <span class="ml-2 text-gray-700">Diabetes</span>
+                </label>
+                <label class="inline-flex items-center">
+                    <input type="checkbox" name="condiciones" value="presionAlta" class="form-checkbox rounded text-indigo-600">
+                    <span class="ml-2 text-gray-700">Presión Arterial alta</span>
+                </label>
+                <label class="inline-flex items-center">
+                    <input type="checkbox" name="condiciones" value="condicionesCardiacas" class="form-checkbox rounded text-indigo-600">
+                    <span class="ml-2 text-gray-700">Condiciones cardiacas</span>
+                </label>
+                <label class="inline-flex items-center">
+                    <input type="checkbox" name="condiciones" value="enfermedadAutoinmune" class="form-checkbox rounded text-indigo-600">
+                    <span class="ml-2 text-gray-700">Enfermedad autoinmune</span>
+                </label>
+                <label class="inline-flex items-center">
+                    <input type="checkbox" name="condiciones" value="lesionesSolares" class="form-checkbox rounded text-indigo-600">
+                    <span class="ml-2 text-gray-700">Lesiones solares</span>
+                </label>
+                <label class="inline-flex items-center">
+                    <input type="checkbox" name="condiciones" value="rosacea" class="form-checkbox rounded text-indigo-600">
+                    <span class="ml-2 text-gray-700">Rosácea</span>
+                </label>
+                <label class="inline-flex items-center">
+                    <input type="checkbox" name="condiciones" value="epilepsia" class="form-checkbox rounded text-indigo-600">
+                    <span class="ml-2 text-gray-700">Epilepsia o Convulsiones</span>
+                </label>
+                <label class="inline-flex items-center">
+                    <input type="checkbox" name="condiciones" value="asma" class="form-checkbox rounded text-indigo-600">
+                    <span class="ml-2 text-gray-700">Asma</span>
+                </label>
+                <label class="inline-flex items-center">
+                    <input type="checkbox" name="condiciones" value="alergiasIngredientes" class="form-checkbox rounded text-indigo-600">
+                    <span class="ml-2 text-gray-700">Alergias a ingredientes o productos específicos</span>
+                </label>
+                <label class="inline-flex items-center">
+                    <input type="checkbox" name="condiciones" value="cirugiasRecientes" class="form-checkbox rounded text-indigo-600">
+                    <span class="ml-2 text-gray-700">Cirugías o procedimientos faciales recientes</span>
+                </label>
+            </div>
+            <div>
+                <label for="otrasCondiciones" class="block text-sm font-medium text-gray-700">Otras condiciones Medicas:</label>
+                <input type="text" id="otrasCondiciones" name="otrasCondiciones" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+            </div>
+        </section>
+
+        <!-- Consentimiento Informado -->
+        <section class="space-y-6 mt-8">
+            <h2 class="text-2xl font-bold text-[#c9a86a]">Consentimiento Informado</h2>
+            <div class="prose prose-sm max-w-none text-gray-700">
+                <p>Yo, quien firma a continuación, declaro que:</p>
+                <ul>
+                    <li>He sido informada/o de manera clara sobre el procedimiento facial que se me va a realizar y sus posibles efectos.</li>
+                    <li>Entiendo que los resultados pueden variar según mi tipo de piel, hábitos y respuesta individual.</li>
+                    <li>Autorizo a la profesional Camila Ravelo para realizar el tratamiento descrito, asumiendo que ha sido explicado con claridad.</li>
+                    <li>Confirmo que he proporcionado información veraz sobre mi estado de salud y antecedentes médicos.</li>
+                    <li>Reconozco que este tratamiento no sustituye un diagnóstico médico ni constituye un acto médico.</li>
+                    <li>Autorizo el uso de productos cosméticos profesionales durante el tratamiento.</li>
+                    <li>Entiendo que se deben seguir las recomendaciones posteriores al procedimiento para mejores resultados.</li>
+                    <li>En caso de menores de edad, se requiere autorización escrita y firma de un acudiente responsable.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Autorización de uso de imagen -->
+        <section class="space-y-6 mt-8">
+            <h2 class="text-2xl font-bold text-[#c9a86a]">Autorización de uso de imagen</h2>
+            <div class="prose prose-sm max-w-none text-gray-700">
+                <p>De manera libre, voluntaria y expresa, autorizo a "Camila Ravelo - Cosmetología & Estética Avanzada" para tomar fotografías o videos antes, durante o después del procedimiento, con fines informativos, promocionales o publicitarios en redes sociales, sitio web o material gráfico de la marca. Esta autorización se otorga conforme a lo dispuesto en la Ley 1581 de 2012 y el Decreto 1377 de 2013 sobre protección de datos personales en Colombia. Entiendo que en caso de no querer otorgar esta autorización, puedo manifestarlo expresamente a la profesional antes del procedimiento.</p>
+            </div>
+        </section>
+
+        <!-- Contacto de Emergencia -->
+        <section class="space-y-6 mt-8">
+            <h2 class="text-2xl font-bold text-[#c9a86a]">Contacto de Emergencia</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <label for="contactoNombre" class="block text-sm font-medium text-gray-700">Nombre:</label>
+                    <input type="text" id="contactoNombre" name="contactoNombre" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+                </div>
+                <div>
+                    <label for="contactoTelefono" class="block text-sm font-medium text-gray-700">Teléfono:</label>
+                    <input type="tel" id="contactoTelefono" name="contactoTelefono" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+                </div>
+                <div>
+                    <label for="parentesco" class="block text-sm font-medium text-gray-700">Parentesco:</label>
+                    <input type="text" id="parentesco" name="parentesco" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+                </div>
+            </div>
+        </section>
+
+        <!-- Pie de página -->
+        <footer class="mt-8 text-center">
+            
+        </footer>
+
+        <!-- Área de Firma y Botones -->
+        <section class="space-y-6 mt-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Firma del cliente -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Firma del cliente:</label>
+                    <div class="signature-pad bg-white w-full h-40">
+                        <canvas id="signatureCanvasCliente" class="w-full h-full"></canvas>
+                    </div>
+                    <button onclick="clearSignature('signatureCanvasCliente')" class="mt-2 text-sm text-red-600 hover:text-red-800 transition-colors">Limpiar firma</button>
+                </div>
+                <!-- Firma del profesional -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Firma del profesional:</label>
+                    <div class="signature-pad bg-white w-full h-40">
+                        <canvas id="signatureCanvasProfesional" class="w-full h-full"></canvas>
+                    </div>
+                    <button onclick="clearSignature('signatureCanvasProfesional')" class="mt-2 text-sm text-red-600 hover:text-red-800 transition-colors">Limpiar firma</button>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Fecha -->
+                <div>
+                    <label for="fecha" class="block text-sm font-medium text-gray-700">Fecha:</label>
+                    <input type="date" id="fecha" name="fecha" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+                </div>
+            </div>
+
+            <!-- Botón de guardar -->
+            <div class="flex justify-center mt-8">
+                <button id="submitButton" onclick="submitForm()" class="px-6 py-3 bg-indigo-600 text-white font-bold rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors">
+                    Guardar Formulario
+                </button>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Contenedor para mensajes de estado -->
+    <div id="statusMessage" class="hidden"></div>
+
+    <script>
+        // URL de tu aplicación web de Google Apps Script.
+        // ¡IMPORTANTE! Reemplaza este valor con la URL que obtuviste en el Paso 3.
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyV_1aFfZKDYPLIEHgVddgMRMcvH8PZOuH5xwbADRES9KQ_HcgQzwChbYe5Lxu95lXD/execve";
+
+        // Función para inicializar el canvas de la firma
+        function setupSignaturePad(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            let isDrawing = false;
+            let lastX = 0;
+            let lastY = 0;
+
+            // Ajustar el tamaño del canvas
+            function resizeCanvas() {
+                const rect = canvas.getBoundingClientRect();
+                canvas.width = rect.width;
+                canvas.height = rect.height;
+                ctx.lineWidth = 3;
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = '#000000';
+            }
+
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            // Funciones de dibujo
+            function draw(e) {
+                if (!isDrawing) return;
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(e.offsetX, e.offsetY);
+                ctx.stroke();
+                [lastX, lastY] = [e.offsetX, e.offsetY];
+            }
+
+            function startDraw(e) {
+                isDrawing = true;
+                [lastX, lastY] = [e.offsetX, e.offsetY];
+            }
+
+            function stopDraw() {
+                isDrawing = false;
+            }
+
+            // Eventos del mouse
+            canvas.addEventListener('mousedown', startDraw);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDraw);
+            canvas.addEventListener('mouseout', stopDraw);
+
+            // Eventos del tacto para dispositivos móviles
+            function getTouchPos(canvasDom, touchEvent) {
+                const rect = canvasDom.getBoundingClientRect();
+                return {
+                    x: touchEvent.touches[0].clientX - rect.left,
+                    y: touchEvent.touches[0].clientY - rect.top
+                };
+            }
+            canvas.addEventListener('touchstart', (e) => {
+                e.preventDefault(); // Previene el scroll
+                const touchPos = getTouchPos(canvas, e);
+                startDraw({ offsetX: touchPos.x, offsetY: touchPos.y });
+            });
+            canvas.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                const touchPos = getTouchPos(canvas, e);
+                draw({ offsetX: touchPos.x, offsetY: touchPos.y });
+            });
+            canvas.addEventListener('touchend', stopDraw);
+        }
+
+        // Función para limpiar la firma
+        function clearSignature(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // Función para mostrar mensajes de estado
+        function showStatusMessage(message, type) {
+            const statusMessage = document.getElementById('statusMessage');
+            statusMessage.textContent = message;
+            statusMessage.className = `message-box ${type}`;
+            statusMessage.classList.remove('hidden');
+            setTimeout(() => {
+                statusMessage.classList.add('hidden');
+            }, 5000);
+        }
+
+        // Función para enviar los datos del formulario
+        async function submitForm() {
+            const submitButton = document.getElementById('submitButton');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Guardando...';
+
+            const formData = new FormData();
+            
+            // Recolectar datos de los inputs de texto, email, tel, date y number
+            document.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], input[type="date"], input[type="number"]').forEach(input => {
+                formData.append(input.name, input.value);
+            });
+            
+            // Recolectar datos de los inputs de radio
+            document.querySelectorAll('input[type="radio"]:checked').forEach(input => {
+                formData.append(input.name, input.value);
+            });
+            
+            // Recolectar datos de los checkboxes y unirlos en un string
+            const sintomas = Array.from(document.querySelectorAll('input[name="sintomas"]:checked')).map(cb => cb.value);
+            formData.append('sintomas', sintomas.length ? sintomas.join(', ') : 'Ninguno');
+            
+            const condiciones = Array.from(document.querySelectorAll('input[name="condiciones"]:checked')).map(cb => cb.value);
+            formData.append('condiciones', condiciones.length ? condiciones.join(', ') : 'Ninguna');
+            
+            // Obtener la firma del cliente y del profesional como base64
+            const signatureCanvasCliente = document.getElementById('signatureCanvasCliente');
+            const signatureDataCliente = signatureCanvasCliente.toDataURL('image/png');
+            formData.append('firmaCliente', signatureDataCliente);
+            
+            const signatureCanvasProfesional = document.getElementById('signatureCanvasProfesional');
+            const signatureDataProfesional = signatureCanvasProfesional.toDataURL('image/png');
+            formData.append('firmaProfesional', signatureDataProfesional);
+
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    showStatusMessage(result.message, 'success');
+                    // Opcional: limpiar el formulario después de un envío exitoso
+                    // document.getElementById('facial-form').reset();
+                } else {
+                    showStatusMessage(`Error: ${result.message}`, 'error');
+                }
+
+            } catch (error) {
+                showStatusMessage('Hubo un problema al enviar el formulario. Inténtalo de nuevo.', 'error');
+                console.error('Error al enviar el formulario:', error);
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Guardar Formulario';
+            }
+        }
+
+        // Inicializar las áreas de firma cuando la ventana se carga
+        window.addEventListener('load', () => {
+            setupSignaturePad('signatureCanvasCliente');
+            setupSignaturePad('signatureCanvasProfesional');
+        });
+    </script>
+</body>
+</html>
